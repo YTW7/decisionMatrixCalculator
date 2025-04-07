@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Step 1: Input Attributes & Alternatives</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script>
+        function addAttributeField() {
+            const container = document.getElementById("attributes");
+            const index = container.children.length;
+
+            const wrapper = document.createElement("div");
+            wrapper.className = "mb-2 d-flex align-items-center";
+            wrapper.innerHTML = `
+                <div class="flex-grow-1 me-2">
+                    <input type="text" name="attributes" class="form-control mb-1" placeholder="Attribute ${index + 1}" required>
+                    <select name="attribute_type_${index}" class="form-control">
+                        <option value="positive">Positive</option>
+                        <option value="negative">Negative</option>
+                    </select>
+                </div>
+                <button type="button" class="btn btn-danger btn-md py-4" onclick="removeField(this)">Remove</button>
+            `;
+            container.appendChild(wrapper);
+        }
+
+        function removeField(button) {
+            const field = button.closest("div");
+            field.remove();
+        }
+
+        function addAlternativeField() {
+            const container = document.getElementById("alternatives");
+            const index = container.children.length;
+            container.innerHTML += `<input type="text" name="alternatives" class="form-control mb-2" placeholder="Alternative ${index + 1}" required>`;
+        }
+    </script>
+</head>
+<body class="container mt-5">
+    <h2>Step 1: Enter Attributes and Alternatives</h2>
+    <form method="POST">
+        <h4>Criteria</h4>
+        <div id="attributes"></div>
+        <button type="button" class="btn btn-secondary mb-3" onclick="addAttributeField()">+ Add Criteria</button>
+
+        <h4>Alternatives</h4>
+        <div id="alternatives"></div>
+        <button type="button" class="btn btn-secondary mb-3" onclick="addAlternativeField()">+ Add Alternative</button>
+
+        <br><br>
+        <button type="submit" class="btn btn-primary">Next: Enter Matrix</button>
+    </form>
+</body>
+</html>

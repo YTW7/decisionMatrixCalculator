@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Step 3: Enter Weights</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+</head>
+<body class="container mt-5">
+    <h2>Step 3: Enter Weights for Each Criteria</h2>
+    <h4 class="mt-4">Normalized Matrix</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Alternative</th>
+                {% for attr in attributes %}
+                <th>{{ attr }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(alternatives|length) %}
+            <tr>
+                <td>{{ alternatives[i] }}</td>
+                {% for j in range(attributes|length) %}
+                <td>{{ normalized_matrix[i][j] | round(4) }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    <form method="POST">
+        <div class="row">
+            {% for attr in attributes %}
+            <div class="col-md-3 mb-3">
+                <label>{{ attr }}</label>
+                <input type="number" step="any" name="weights[]" class="form-control" required>
+            </div>
+            {% endfor %}
+        </div>
+        <button type="submit" class="btn btn-primary">Next: View Results</button>
+    </form>
+</body>
+</html>

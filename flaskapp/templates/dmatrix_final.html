@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Step 4: TOPSIS Results</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="container mt-5">
+    <h2>TOPSIS Final Results</h2>
+
+    <h4 class="mt-4">Weighted Normalized Decision Matrix</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Alternative</th>
+                {% for attr in attributes %}
+                <th>{{ attr }}</th>
+                {% endfor %}
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(alternatives|length) %}
+            <tr>
+                <td>{{ alternatives[i] }}</td>
+                {% for j in range(attributes|length) %}
+                <td>{{ weighted_matrix[i][j] | round(4) }}</td>
+                {% endfor %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <h4 class="mt-4">Positive Ideal Solution (PIS)</h4>
+    <ul class="list-group list-group-horizontal">
+        {% for value in PIS %}
+        <li class="list-group-item">{{ value | round(4) }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4 class="mt-4">Negative Ideal Solution (NIS)</h4>
+    <ul class="list-group list-group-horizontal">
+        {% for value in NIS %}
+        <li class="list-group-item">{{ value | round(4) }}</li>
+        {% endfor %}
+    </ul>
+
+    <h4 class="mt-4">Ranking Table</h4>
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Alternative</th>
+                <th>S+ (Distance to PIS)</th>
+                <th>S- (Distance to NIS)</th>
+                <th>Closeness (C*)</th>
+                <th>Rank</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for i in range(alternatives|length) %}
+            <tr>
+                <td>{{ alternatives[i] }}</td>
+                <td>{{ s_plus[i] | round(4) }}</td>
+                <td>{{ s_minus[i] | round(4) }}</td>
+                <td>{{ relative_closeness[i] | round(4) }}</td>
+                <td>{{ ranking.index(i) + 1 }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <!-- Chart Section -->
+    <h4 class="mt-5">Visual Representation: Closeness to Ideal Solution (C*)</h4>
+    <canvas id="topsisChart" width="600" height="400"></canvas>
+
+    <script>
+        const ctx = document.getElementById('topsisChart').getContext('2d');
+        const chart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: {{ alternatives | tojson }},
+                datasets: [{
+                    label: 'Relative Closeness (C*)',
+                    data: {{ relative_closeness | tojson }},
+                    backgroundColor: 'rgba(54, 162, 235, 0.6)',
+                    borderColor: 'rgba(54, 162, 235, 1)',
+                    borderWidth: 1
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 1
+                    }
+                },
+                plugins: {
+                    title: {
+                        display: true,
+                        text: 'Classifier Rankings by Relative Closeness (C*)'
+                    },
+                    tooltip: {
+                        callbacks: {
+                            label: function(context) {
+                                return 'Closeness: ' + context.parsed.y.toFixed(4);
+                            }
+                        }
+                    }
+                }
+            }
+        });
+    </script>
+
+    <a href="/" class="btn btn-secondary mt-4">Start Over</a>
+</body>
+
+</html>
